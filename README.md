@@ -104,7 +104,7 @@ void bar() {
 ```
 
 ### <a name="S-basics-autotypes"></a>Prefer autotypes
-Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = (char*) malloc(64).
+Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = malloc(64).
 Its not only faster, but you also dont need to worry about freeing memory.
 Structs that represents dynamic arrays can also make use of them:
 ```c
@@ -114,5 +114,5 @@ typedef struct {
     int size;
 } Indices;
 ```
-The disadvantage is, that these array autotypes are limited in size, 
-but if the contents are small emough, prefer them.
+The disadvantage is of course, that these array autotypes are limited in size, 
+but if the contents are small emough, always prefer them.
