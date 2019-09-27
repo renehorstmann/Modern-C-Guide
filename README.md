@@ -30,7 +30,28 @@ IN ACTUAL WORK!
 ## <a name="S-basics"></a>Basics
 ### <a name="S-basics-where_variables"></a>Where to put variable instantiations
 In old C compilers, variable instantiations must be at he beginning of a function.
-In modern C, one would create variables their, where they are first needed.
+In modern C, you would create variables at the line, where they are first needed.
 ```c
+void foo() {
+    int sum = 0;
 
+    // declare i within the for
+    for(int i=0; i<10; i++)
+        sum += i*i;
+
+    float inv = 1.0f / sum;
+
+    // bundle complicated assignments before
+    int *array;
+    int size;
+    {
+        if(sum > 20) {
+            array = (int) malloc(16);
+            size = 4;
+        } else {
+            array = (int) malloc(4);
+            size = 1;
+        }
+    }
+}
 ```
