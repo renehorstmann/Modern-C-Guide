@@ -10,7 +10,7 @@ IN ACTUAL WORK!
 + [Basics](#S-basics)
   - [Where to put variable instantiations](#S-basics-where_variables)
   - [Error handling](#S-basics-errors)
-  - Prefer autotypes
+  - [Prefer autotypes](#S-basics-autotypes)
 
 + Naming
   - Variables
@@ -46,10 +46,10 @@ void foo() {
     int size;
     {
         if(sum > 20) {
-            array = (int) malloc(16);
+            array = (int*) malloc(16);
             size = 4;
         } else {
-            array = (int) malloc(4);
+            array = (int*) malloc(4);
             size = 1;
         }
     }
@@ -102,3 +102,17 @@ void bar() {
     }
 }
 ```
+
+### <a name="S-basics-autotypes"></a>Prefer autotypes
+Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = (char*) malloc(64).
+Its not only faster, but you also dont need to worry about freeing memory.
+Structs that represents dynamic arrays can also make use of them:
+```c
+// An autotype struct that can safe up to 1024 indices (ints)
+typedef struct {
+    int data[1024];
+    int size;
+} Indices;
+```
+The disadvantage is, that these array autotypes are limited in size, 
+but if the contents are small emough, prefer them.
