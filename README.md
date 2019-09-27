@@ -1,4 +1,4 @@
-# C-Style-Guide
+# Modern-C-Guide
 A Style Guide for modern C programming
 
 In this repository I'll show you my recommendations for good coding style in the C programming language.
@@ -112,7 +112,7 @@ Structs that represents dynamic arrays can also make use of them:
 typedef struct {
     int data[1024];
     int size;
-} Indices;
+} indices;
 ```
 The disadvantage is of course, that these array autotypes are limited in size, 
 but if the contents are small emough, always prefer them.
