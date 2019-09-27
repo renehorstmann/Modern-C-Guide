@@ -9,7 +9,7 @@ IN ACTUAL WORK!
 
 + [Basics](#S-basics)
   - [Where to put variable instantiations](#S-basics-where_variables)
-  - Error handling
+  - [Error handling](#S-basics-errors)
   - Prefer autotypes
 
 + Naming
@@ -52,6 +52,53 @@ void foo() {
             array = (int) malloc(4);
             size = 1;
         }
+    }
+}
+```
+
+
+
+
+### <a name="S-basics-errors"></a>Error Handling
+Don't use setjmp and longjmp!
+The old way ist to indicate an error by a return value of -1 and read errno for the error code.
+A more modern way is to return a static const string, or NULL if no error occured.
+If you get an error, you can directly read it in the debug session.
+```c
+// somewhere in a header
+typedef const char *Error;
+extern Error ERROR_NullPointer;
+extern Error ERROR_FileNotFound;
+// ...
+
+// somewhere in a source
+Error ERROR_NullPointer = "NullPointer";
+Error ERROR_FileNotFound = "FileNotFound";
+
+// function that can throw an error
+Error foo(int *a) {
+    if(!a)
+        return ERROR_NullPointer;
+
+    if(*a < 0)
+        return "fooCustomError";
+
+    return NULL; // success
+}
+
+// using foo
+void bar() {
+    Error err = foo(NULL);
+    if(err) {
+
+        // direct pointer check
+        if(err == ERROR_FileNotFound)
+             ; // handle error
+
+        //...
+  
+        // print the error
+        print("Error @ foo: %s\n", err);
     }
 }
 ```
