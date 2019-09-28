@@ -105,6 +105,115 @@ void bar() {
 }
 ```
 
+If you have a complicated function, 
+in where you must free and close on multiple areas,
+break it into multiple smaller functions, 
+or use a clean section with gotos, 
+or use my [Utilc/Scope](https://github.com/renehorstmann/Utilc).
+
+```c
+// bad example:
+int complicated() {
+    FILE *file = fopen("file.txt", "r");
+    int *data;
+
+    // ...
+
+    // pre allocate data
+    data = malloc(16);
+    if(!data) {
+        fclose(file);
+        return 1;
+    }
+
+    // ...
+
+    // parse file
+    float a, b;
+    int read = fscanf(file, "%f %f", &a, &b);
+    if(read != 2) {
+        fclose(file);
+        free(data);
+        return 2;
+    } 
+
+    // ... probably more code with exit conditions
+
+    fclose(file);
+    free(data);
+    return 0;
+}
+```
+Turn the code above into this:
+
+```c
+// splitted function:
+static Error parse_file_(const FILE *file, int *data) {
+    float a, b;
+    int read = fscanf(file, "%f %f", &a, &b);
+    if(read != 2)
+        return "ParseError";
+    
+    // ...
+    
+    return NULL;
+}
+
+
+Error complicated() {
+    Error err; // instantiate because of multiple uses
+
+    // pre allocate data
+    data = malloc(16);
+    if(!data)
+        return "AllocError";
+
+    // open file at first usage
+    FILE *file = fopen("file.txt", "r");
+    err = parse_file_(file, data);
+    fclose(file);
+    if(err) {
+        free(data);
+        return err;
+    }
+
+    // ...
+
+    free(data);
+    return NULL;
+}
+```
+
+Or/ and use a cleanup section at the functions end:
+
+```c
+Error complicated() {
+    // In this case, all needed stuff for cleaning
+    // should be instantiated here
+    Error err = NULL;
+    int *data = NULL; // its safe to free(NULL)
+
+    // ...
+
+    // file is only used here, so as above:
+    // open file at first usage
+    FILE *file = fopen("file.txt", "r");
+    err = parse_file_(file, data);
+    fclose(file);
+    if(err)
+        goto CLEAN_UP;
+    
+    // ...
+
+    CLEAN_UP:
+    free(data);
+    return err;
+}
+
+
+```
+
+
 ### <a name="S-basics-autotypes"></a>Prefer autotypes
 Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = malloc(64).
 Its not only faster, but you also dont need to worry about freeing memory.
