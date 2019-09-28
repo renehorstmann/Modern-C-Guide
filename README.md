@@ -63,7 +63,7 @@ void foo() {
 
 ### <a name="S-basics-errors"></a>Error Handling
 Don't use setjmp and longjmp!
-The old way ist to indicate an error by a return value of -1 and read errno for the error code.
+The old way ist to indicate an error by a return value of -1 and set a global error code (errno).
 A more modern way is to return a static const string, or NULL if no error occured.
 If you get an error, you can directly read it in the debug session.
 ```c
