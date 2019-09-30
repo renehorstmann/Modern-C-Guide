@@ -29,7 +29,7 @@ IN ACTUAL WORK!
 
 ## <a name="S-basics"></a>Basics
 ### <a name="S-basics-where_variables"></a>Where to put variable instantiations
-In old C compilers, variable instantiations must be at he beginning of a function.
+In old C compilers, variable instantiations must be at the beginning of a function.
 In modern C, you can and should create variables at the line, where they are first needed.
 (If you need a variable multiple times for different use cases (e. g. error codes), put it at the start).
 ```c
