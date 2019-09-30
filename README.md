@@ -12,10 +12,10 @@ IN ACTIVE WORK!
   - [Error handling](#S-basics-errors)
   - [Prefer autotypes](#S-basics-autotypes)
 
-+ Naming
-  - Variables
-  - Functions
-  - Macros
++ [Naming](#S-naming)
+  - [Variables](#S-naming-variables)
+  - [Functions](#S-naming-functions)
+  - [Macros](#S-naming-macros)
   - Structs
   - Classes
   - Namespaces
@@ -228,3 +228,41 @@ typedef struct {
 ```
 The disadvantage is of course, that these array autotypes are limited in size, 
 but if the contents are small emough, always prefer them.
+
+
+
+## <a name="S-naming"></a>Naming
+A consistent naming sheme is generelly usefull for all kinds of stuff, but especially in programming and its very very important in C programming.
+In the C programming world, there is no specific definition of, for example, a class and its methods.
+Its the programmers task to use a naming sheme, so that the reader can easily see whats going on.
+With autocompletion, there is no need for small names like strtof. The programmer should always write readable code, with only common and/ or good abbreviations.
+
+
+### <a name="S-naming-variables"></a>Variables
+I prefer to use snake_case names for variables, if you want to use a member of a struct and you have no clue, use its lowercase name or a good abbreviation.
+```c
+int car_petrol;
+FILE *file;
+strviu viu;
+intiterator iter;
+```
+
+### <a name="S-naming-functions"></a>Functions
+Like the variables [above](#S-naming-variables), I also prefer snake_case names.
+```c
+FILE *open_and_check(const char *filepath);
+IntSet set_from_list(int *list, int size);
+int max(int a, int b);
+```
+
+
+### <a name="S-naming-macros"></a>Macros
+Lots of C programmers use SCREAM_CASE for macros. But it leads to errors if these are reset by other libraries.
+If you want to use SCREAM_CASE, always use a namespace prefix like MYLIB_SCREAM_CASE (MYLIB should be replaced...).
+Instead of using this, I prefer PascalCase for macros:
+```c
+#define Max(a, b) ((a) > (b) ? (a) : (b))
+#define Free0(ptr) {free(ptr); ptr=NULL;}
+```
+
+
