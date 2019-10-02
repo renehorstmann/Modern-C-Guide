@@ -312,3 +312,5 @@ struct uncommon uc;
 
 
 #### <a name="S-naming-structs-usecases"></a>Use Cases
+As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
+
