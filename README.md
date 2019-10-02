@@ -281,8 +281,7 @@ Within an implementation, or when commonly used in an interface header,
 create the struct with a typedef:
 
 ```c
-// Implementation
-// Interface header with common use
+// Implementation & Interface header with common use
 
 typedef struct {
     int a, b, c;
