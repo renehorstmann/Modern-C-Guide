@@ -281,6 +281,9 @@ Within an implementation, or when commonly used in an interface header,
 create the struct with a typedef:
 
 ```c
+// Implementation
+// Interface header with common use
+
 typedef struct {
     int a, b, c;
 } foo;
@@ -297,6 +300,8 @@ don't use a typedef. The user can than self decide if he want to create it.
 In this way, the name of the struct is not wasted for the user (except for structs).
 
 ```c
+// Interface header with uncommon use
+
 struct uncommon {
     bool mode;
     uint8_t data[128];
