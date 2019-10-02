@@ -16,7 +16,7 @@ IN ACTIVE WORK!
   - [Variables](#S-naming-variables)
   - [Functions](#S-naming-functions)
   - [Macros](#S-naming-macros)
-  - Structs
+  - [Structs](#S-naming-structs)
   - Classes
   - Namespaces
   
@@ -255,7 +255,6 @@ intset set_diff(intset a, intset b);
 int max(int a, int b);
 ```
 
-
 ### <a name="S-naming-macros"></a>Macros
 Lots of C programmers use SCREAM_CASE for macros. But it leads to errors if these are reset by other libraries.
 If you want to use SCREAM_CASE, always use a namespace prefix like MYLIB_SCREAM_CASE (MYLIB should be replaced...).
@@ -266,3 +265,46 @@ Instead of using this, I prefer PascalCase for macros:
 ```
 
 
+### <a name="S-naming-structs"></a>Structs
+Structs can occour in three [code areas](#S-naming-structs-area):
++ Implementation
++ Interface header with uncommon use
++ Interface header with common use
+
+With one of the following three [use cases](#S-naming-structs-usecases):
++ Autotype Structs
++ Structs that needs to be freed/ killed
++ Classes
+
+#### <a name="S-naming-structs-area"></a>Code Areas
+Within an implementation, or when commonly used in an interface header,
+create the struct with a typedef:
+
+```c
+typedef struct {
+    int a, b, c;
+} foo;
+
+// or
+typedef struct item {
+    int i;
+    struct item *next;
+} item;
+```
+
+If its a not commonly used struct in an interface header, 
+don't use a typedef. The user can than self decide if he want to create it.
+In this way, the name of the struct is not wasted for the user (except for structs).
+
+```c
+struct uncommon {
+    bool mode;
+    uint8_t data[128];
+};
+
+// the user could instantiate it like so:
+struct uncommon uc;
+```
+
+
+#### <a name="S-naming-structs-usecases"></a>Use Cases
