@@ -251,7 +251,7 @@ intiterator iter;
 Like the variables [above](#S-naming-variables), I also prefer snake_case names.
 ```c
 FILE *open_and_check(const char *filepath);
-IntSet set_from_list(int *list, int size);
+intset set_diff(intset a, intset b);
 int max(int a, int b);
 ```
 
