@@ -17,7 +17,7 @@ IN ACTIVE WORK!
   - [Functions](#S-naming-functions)
   - [Macros](#S-naming-macros)
   - [Structs](#S-naming-structs)
-  - Classes
+  - [Classes](#S-naming-classes)
   - Namespaces
   
 + How to use object orientation in C
