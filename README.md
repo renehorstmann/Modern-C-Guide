@@ -340,7 +340,7 @@ typedef struct {
 ```
 
 Structs that own data on heap or classes needs to be killed/ freed.
-There is a fluid transition between these to, so I treat them as the same.
+There is a fluid transition between these two, so I treat them the same.
 For marking, I use PascalCase for their names.
 With this convention, the user directly sees at their instantiation, that he needs to kill them somewhere.
 
