@@ -302,8 +302,8 @@ In this way, the name of the struct is not wasted for the user (except for struc
 // Interface header with uncommon use
 
 struct uncommon {
-    bool mode;
     uint8_t data[128];
+    bool mode;
 };
 
 // the user could instantiate it like so:
