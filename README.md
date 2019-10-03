@@ -415,7 +415,63 @@ int load_csv_file_to_heap_array(float **out_array, const char *file);
  * @param file: The .csv file to save into (relative or absolute path, '~' for home)
  * @returns: the number of saved fields, or -1 on error
  */
-int save_csv_file(const char *file, const float *array, int size);
+int save_csv_file(const char *file, const float *array, int n);
 
 #endif //CSV_H
 ```
+
+When your library gets bigger and/ or types get into the interface header, that will be part of interfaces for the user, a namespace is needed.
+A namespace is a simple and very short prefix for all names in your interface.
+A geometry library may look like the following:
+
+```c
+// Namespace (geo)
+
+// geo/types.h
+#ifndef GEO_TYPES_H
+#define GEO_TYPES_H
+
+typedef float geo_vec[2];
+
+// Autotype struct
+typedef struct {
+    float x, y;
+} geo_point;
+
+typedef struct {
+    geo_point center;
+    float radius;
+} geo_circle;
+
+
+// Class
+typedef struct {
+    geo_point *data;
+    int size;
+} geo_PointArray;
+
+void geo_PointArray_kill(geo_PointArray *self) {
+    free(self->data);
+    self->data = NULL;
+    self->size = 0;
+}
+
+#endif // GEO_TYPES_H
+
+
+
+// geo/intersection.h
+#ifndef GEO_INTERSECTION_H
+#define GEO_INTERSECTION_H
+
+#include "types.h"
+
+/**
+ * @returns: all points that lie in the circle
+ */
+geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
+
+#endif // GEO_INTERSECTION_H
+```
+
+
