@@ -339,43 +339,44 @@ typedef struct {
 } pointarray;
 ```
 
-Structs that own data on heap or (often) classes needs to be killed/ freed.
-To mark them, I use PascalCase for their names:
+Structs that own data on heap or classes needs to be killed/ freed.
+There is a fluid transition between these to, so I treat them as the same.
+For marking, I use PascalCase for their names.
+With this convention, the user directly sees at their instantiation, that he needs to kill them somewhere.
 
 ```c
-// Struct that needs to be killed
+// Classes
 
 typedef struct {
     char *str;
 } String;
 
-// Struct destructor:
+// Destructor:
 void String_kill(String *self) {
     free(self->str);
     self->str = NULL;
 }
 
 
-// Class
 typedef struct {
     int *data;
     int size;
 } IntArray;
 
-// Class constructor
+// Constructor
 void IntArray_new(IntArray *self, int size) {
     self->data = calloc(size, sizeof(int));
     self->size = size;
 }
 
-// Class destructor
+// Destructor
 void IntArray_kill(IntArray *self) {
     free(self->data);
     self->data = NULL;
     self->size = NULL;
 }
 
-// Class method
+// Method
 void IntArray_push(IntArray *self, int append) {
     self->data = realloc(self->data, ++self->size * sizeof(int));
     self->data[self->size-1] = append;
