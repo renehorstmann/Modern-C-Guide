@@ -1,7 +1,7 @@
 # Modern-C-Guide
 A Style Guide for modern C programming
 
-In this repository I'll show you my recommendations for good coding style in the C programming language.
+In this repository I'll show you my recommendations for a good coding style in the C programming language.
 
 IN ACTIVE WORK!
 
