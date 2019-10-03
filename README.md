@@ -385,7 +385,7 @@ void IntArray_push(IntArray *self, int append) {
 
 ### <a name="S-naming-classes"></a>Classes
 As seen in the previos example above, I prefer PascalCase for classes.
-The data section of the class has the ClassName.
+The data section of the class gets the ClassName.
 The constructor is called ClassName_new and the destructor ClassName_kill.
 All methods also use this naming sheme, like ClassName_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
