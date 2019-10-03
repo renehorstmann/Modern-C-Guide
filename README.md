@@ -338,3 +338,47 @@ typedef struct {
     int size;
 } pointarray;
 ```
+
+Structs that own data on heap or (often) classes needs to be killed/ freed.
+To mark them, I use PascalCase for their names:
+
+```c
+// Struct that needs to be killed
+
+typedef struct {
+    char *str;
+} String;
+
+// Struct destructor:
+void String_kill(String *self) {
+    free(self->str);
+    self->str = NULL;
+}
+
+
+// Class
+typedef struct {
+    int *data;
+    int size;
+} IntArray;
+
+// Class constructor
+void IntArray_new(IntArray *self, int size) {
+    self->data = calloc(size, sizeof(int));
+    self->size = size;
+}
+
+// Class destructor
+void IntArray_kill(IntArray *self) {
+    free(self->data);
+    self->data = NULL;
+    self->size = NULL;
+}
+
+// Class method
+void IntArray_push(IntArray *self, int append) {
+    self->data = realloc(self->data, ++self->size * sizeof(int));
+    self->data[self->size-1] = append;
+}
+```
+
