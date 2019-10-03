@@ -313,4 +313,28 @@ struct uncommon uc;
 
 #### <a name="S-naming-structs-usecases"></a>Use Cases
 As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
+Autotype structs should be marked, so the user can directly identify them.
+I use (short) lowercasewithoutunderscores names for them:
 
+```c
+// Autotype structs
+
+typedef struct {
+    float x, y;
+} point;
+
+typedef struct {
+    point tl, br; // top left, bottom right
+} rect;
+
+typedef struct {
+    point center;
+    float width, height;
+    float angle;
+} rotatedrect;
+
+typedef struct {
+    point data[1024];
+    int size;
+} pointarray;
+```
