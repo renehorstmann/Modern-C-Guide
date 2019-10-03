@@ -18,7 +18,7 @@ IN ACTIVE WORK!
   - [Macros](#S-naming-macros)
   - [Structs](#S-naming-structs)
   - [Classes](#S-naming-classes)
-  - Namespaces
+  - [Namespaces](#S-naming-namespaces)
   
 + How to use object orientation in C
   - Simple machine
@@ -391,3 +391,31 @@ All methods also use this naming sheme, like ClassName_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
 
+### <a name="S-naming-namespaces"></a>Namespaces
+If you write a small library with a handful of good used names in the interface, you must not use a namespace.
+For example a library that loads a .csv file, can use an interface header like this:
+
+```c 
+// No namespace needed
+
+// csv.h
+#ifndef CSV_H
+#define CSV_H
+
+/**
+ * Loads a .csv file into heap memory.
+ * @param out_array: Pointer to the allocated data array
+ * @param file: The .csv file to load (relative or absolute path, '~' for home)
+ * @returns: the number of loaded fields, or -1 on error
+ */
+int load_csv_file_to_heap_array(float **out_array, const char *file);
+
+/**
+ * Saves a .csv file into the given file.
+ * @param file: The .csv file to save into (relative or absolute path, '~' for home)
+ * @returns: the number of saved fields, or -1 on error
+ */
+int save_csv_file(const char *file, const float *array, int size);
+
+#endif //CSV_H
+```
