@@ -20,7 +20,7 @@ IN ACTIVE WORK!
   - [Classes](#S-naming-classes)
   - [Namespaces](#S-naming-namespaces)
   
-+ How to use object orientation in C
++ [Object orientation in C](#S-oo)
   - Simple machine
   - Inheritance
   - Virtual Methods
@@ -474,4 +474,10 @@ geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
 #endif // GEO_INTERSECTION_H
 ```
 
+
+
+## <a name="S-oo"></a>Object Orientation in C
+Also the C programming language doesn't support object orientated programming nativly,
+it's still possible and quite easy.
+A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases)
 
