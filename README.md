@@ -21,7 +21,7 @@ IN ACTIVE WORK!
   - [Namespaces](#S-naming-namespaces)
   
 + [Object orientation in C](#S-oo)
-  - Simple machine
+  - [Simple machine](#S-oo-simple)
   - Inheritance
   - Virtual Methods
   - Interfaces
@@ -479,5 +479,60 @@ geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
 ## <a name="S-oo"></a>Object Orientation in C
 Also the C programming language doesn't support object orientated programming nativly,
 it's still possible and quite easy.
-A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases)
 
+
+## <a name="S-oo-simple"></a>Simple machine
+A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases)
+If you know that there will never be more than one instance of your class, go the procedure way:
+
+```c
+// max. 1 instance of Foo
+
+//
+// foo.h
+//
+
+// public data
+extern int foo_cnt;
+
+// Constructor
+void foo_init();
+
+// Destructor
+void foo_kill();
+
+// Methods:
+void foo_add();
+
+void foo_print();
+
+
+//
+// foo.c
+//
+
+// public data
+int foo_cnt;
+
+// private data
+static int internal_cnt;
+
+void foo_init() {
+    foo_cnt = 1;
+    internal_cnt = -1;
+}
+
+void foo_kill() {
+    // free memory, close files...
+    foo_cnt = 0;
+}
+
+void foo_add() {
+    foo_cnt++;
+}
+
+void foo_print() {
+    printf("foo %d\n", foo_cnt+internal_cnt);
+}
+
+```
