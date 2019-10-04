@@ -482,7 +482,7 @@ it's still possible and quite easy.
 
 
 ## <a name="S-oo-simple"></a>Simple machine
-A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases)
+A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases).
 If you know that there will never be more than one instance of your class, go the procedure way:
 
 ```c
