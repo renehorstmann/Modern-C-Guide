@@ -22,7 +22,7 @@ IN ACTIVE WORK!
   
 + [Object orientation in C](#S-oo)
   - [Simple machine](#S-oo-simple)
-  - Inheritance
+  - [Inheritance](#S-oo-inheritance)
   - Virtual Methods
   - Interfaces
 
@@ -481,7 +481,7 @@ Although the C programming language doesn't support object orientated programmin
 it's still possible and quite easy.
 
 
-## <a name="S-oo-simple"></a>Simple machine
+### <a name="S-oo-simple"></a>Simple machine
 A little example of a simple "machine" class was already shown in chapter [Naming structs (use cases)](#S-naming-structs-usecases).
 If you know that there will never be more than one instance of your class, go the procedure way:
 
@@ -537,6 +537,9 @@ void foo_print() {
 
 ```
 
+I like to call constructors ClassName_init and destructors ClassName_kill.
+If you stick with this, or another name, your users can easily find for other classes as well.
+Destructors should always have the function form: void(ClassName *self)
 The same "machine", but with multiple possible instances looks like the following:
 
 ```c
@@ -610,4 +613,55 @@ void Foo_killfree(Foo *self) {
 
 
 ```
+
+
+### <a name="S-oo-inheritance"></a>Inheritance
+Deriving from a class is easy in C. But its important that your users know the base class.
+To derive from the class Foo above, do the following:
+
+```c
+
+typedef struct {
+    // include data of mother at first place
+    Foo base;
+
+    // public data of Bar
+    float amplitude;
+} Bar;
+
+void Bar_init(Bar *self, float amp) {
+    // call super.init
+    // casting to Foo works, 
+    //   because the first data in Bar is Foo
+    Foo_init((Foo *) self);
+    self->amplitude = amp;
+}
+
+void Bar_kill(Bar *self) {
+    Foo_kill((Foo *) self);
+    self->amplitude = -1;
+}
+
+void Bar_amplify(Bar *self) {
+    self->amplitude *= 2;
+}
+
+
+// Usage:
+int main() {
+    Bar b;
+    Bar_init(&b);
+    
+    // Call mother method:
+    Foo_print((Foo *) &b)
+    
+    // or...
+    Foo_print(&b.base);
+
+    Bar_kill(&b);
+}
+
+```
+
+
 
