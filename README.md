@@ -364,7 +364,7 @@ typedef struct {
 } IntArray;
 
 // Constructor
-void IntArray_new(IntArray *self, int size) {
+void IntArray_init(IntArray *self, int size) {
     self->data = calloc(size, sizeof(int));
     self->size = size;
 }
@@ -561,10 +561,52 @@ void Foo_init(Foo *self);
 void Foo_kill(Foo *self);
 
 // methods:
-
 void Foo_add(Foo *self, int add);
 
 void Foo_print(const Foo *self);
+
+// optional heap constructor
+Foo *Foo_new();
+
+// optional heap destructor
+void Foo_killfree(Foo *self);
+
+
+//
+// foo.c
+//
+
+#include "foo.h" 
+
+void Foo_init(Foo *self) {
+    self->cnt = 1;
+    self->internal_cnt = -1;
+}
+
+void Foo_kill(Foo *self) {
+    // free memory, close files...
+    self->cnt = 0;
+}
+
+void Foo_add(Foo *self, int add) {
+    self->cnt += add;
+}
+
+void Foo_print(const Foo *self) {
+    printf("foo %d\n", self->cnt+self->internal_cnt);
+}
+
+
+Foo *Foo_new() {
+    Foo *res = malloc(sizeof(Foo));
+    Foo_init(res);
+    return res;
+}
+
+void Foo_killfree(Foo *self) {
+    Foo_kill(self);
+    free(self);
+}
 
 
 ```
