@@ -477,7 +477,7 @@ geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
 
 
 ## <a name="S-oo"></a>Object Orientation in C
-Also the C programming language doesn't support object orientated programming nativly,
+Although the C programming language doesn't support object orientated programming nativly,
 it's still possible and quite easy.
 
 
