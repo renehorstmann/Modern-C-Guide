@@ -495,14 +495,14 @@ If you know that there will never be more than one instance of your class, go th
 // public data
 extern int foo_cnt;
 
-// Constructor
+// constructor
 void foo_init();
 
-// Destructor
+// destructor
 void foo_kill();
 
-// Methods:
-void foo_add();
+// methods:
+void foo_add(int add);
 
 void foo_print();
 
@@ -527,8 +527,8 @@ void foo_kill() {
     foo_cnt = 0;
 }
 
-void foo_add() {
-    foo_cnt++;
+void foo_add(int add) {
+    foo_cnt += add;
 }
 
 void foo_print() {
@@ -536,3 +536,36 @@ void foo_print() {
 }
 
 ```
+
+The same "machine", but with multiple possible instances looks like the following:
+
+```c
+// multiple instances of foo possible
+
+//
+// foo.h
+//
+
+typedef struct {
+    // public data
+    int cnt;
+  
+    // private data (tailing underscore)
+    int internal_cnt_;
+} Foo;
+
+// constructor
+void Foo_init(Foo *self);
+
+// destructor
+void Foo_kill(Foo *self);
+
+// methods:
+
+void Foo_add(Foo *self, int add);
+
+void Foo_print(const Foo *self);
+
+
+```
+
