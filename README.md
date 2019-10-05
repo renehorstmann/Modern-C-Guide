@@ -23,7 +23,7 @@ IN ACTIVE WORK!
 + [Object orientation in C](#S-oo)
   - [Simple machine](#S-oo-simple)
   - [Inheritance](#S-oo-inheritance)
-  - Virtual Methods
+  - [Virtual Methods](#S-oo-virtual)
   - Interfaces
 
 
@@ -662,6 +662,11 @@ int main() {
 }
 
 ```
+
+
+### <a name="S-oo-virtual"></a>Virtual Methods
+
+
 
 
 
