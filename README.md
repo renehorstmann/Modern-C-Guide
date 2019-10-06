@@ -703,7 +703,7 @@ typedef struct {
 } Object;
 
 void *is_instance(void *object, const char *type) {
-    if(strncmp(self, type, strlen(type)) == 0) 
+    if(strncmp(object, type, strlen(type)) == 0) 
         return self;
     return NULL;
 }
