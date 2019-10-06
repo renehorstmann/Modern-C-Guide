@@ -624,7 +624,7 @@ In the following example, the class Child derives (static) from the class Mother
 ```c
 
 // class Mother
-typefef struct {
+typedef struct {
     char *data;
     int a;
 } Mother;
