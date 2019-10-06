@@ -692,7 +692,84 @@ int main() {
 
 
 ### <a name="S-oo-rtti"></a>RTTI
-RunTimeTypeInformation
+Run time type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
+To achieve this, the root base class should have an identification string (as char array autotype).
+Or all root base classes inherit from an Object class that implements the string.
+
+```c
+
+typedef struct {
+    char type[64]
+} Object;
+
+void *is_instance(void *object, const char *type) {
+    if(strncmp(self, type, strlen(type)) == 0) 
+        return self;
+    return NULL;
+}
+
+
+// class TypeA
+typedef struct {
+    Object base;
+
+    int a;
+} TypeA;
+
+const char *TypeA_TYPE = "TypeA";
+
+void TypeA_init(TypeA *self) {
+    strcpy(self, TypeA_TYPE);
+    self->a = 1;
+}
+
+// class TypeAB : TypeA
+typedef struct {
+    TypeA base;
+
+    int b;
+} TypeAB;
+
+const char *TypeAB_TYPE = "TypeATypeAB";
+
+void TypeAB_init(TypeAB *self) {
+    TypeA_init((TypeA *) self);
+    strcpy(self, TypeAB_TYPE);
+    self->b = 2;
+}
+
+// class Car
+typedef struct {
+    Object base;
+
+    int color;
+} Car;
+
+const char *Car_TYPE = "Car";
+
+void Car_init(Car *self) {
+    strcpy(self, Car_TYPE);
+    self->color = 0xff00ff;
+}
+
+
+// usage
+int main() {
+    TypeAB ab;
+    TypeAB_init(&ab);
+
+    TypeA *as_a = is_instance(&ab, TypeA_TYPE);
+    if(as_a)
+         puts("is TypeA");
+    
+    TypeAB *as_ab = is_instance(as_a, TypeAB_TYPE);
+    if(as_ab)
+         puts("is TypeAB");
+
+    Car *as_car = is_instance(as_a, Car_TYPE); 
+    assert(!as_car);
+}
+```
 
 ### <a name="S-oo-virtual"></a>Virtual Methods
 
