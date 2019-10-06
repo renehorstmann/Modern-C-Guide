@@ -699,12 +699,12 @@ Or all root base classes inherit from an Object class that implements the string
 ```c
 
 typedef struct {
-    char type[64]
+    char type[64];
 } Object;
 
 void *is_instance(void *object, const char *type) {
     if(strncmp(object, type, strlen(type)) == 0) 
-        return self;
+        return object;
     return NULL;
 }
 
