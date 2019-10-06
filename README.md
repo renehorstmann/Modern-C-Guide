@@ -680,12 +680,12 @@ int main() {
     int len = Child_length(&c);
     
     // Call mother method:
-    Mother_print((Mother *) &b, 5)
+    Mother_print((Mother *) &c, 5)
     
     // or...
-    Mother_print(&b.base, len);
+    Mother_print(&c.base, len);
 
-    Child_kill(&b);
+    Child_kill(&c);
 }
 
 ```
