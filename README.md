@@ -23,6 +23,7 @@ IN ACTIVE WORK!
 + [Object orientation in C](#S-oo)
   - [Simple machine](#S-oo-simple)
   - [Inheritance](#S-oo-inheritance)
+  - [RTTI](#S-oo-rtti)
   - [Virtual Methods](#S-oo-virtual)
   - Interfaces
 
@@ -617,52 +618,81 @@ void Foo_killfree(Foo *self) {
 
 ### <a name="S-oo-inheritance"></a>Inheritance
 Deriving from a class is easy in C. But its important that your users know the base class.
-To derive from the class Foo above, do the following:
+In the following example, the class Child derives (static) from the class Mother:
+(static = no run time information and no virtual methods -> the user must call the right methods himself)
 
 ```c
 
+// class Mother
+typefef struct {
+    char *data;
+    int a;
+} Mother;
+
+void Mother_init(Mother *self, int amount) {
+    self->data = malloc(amount);
+    self->a = amount;
+}
+
+void Mother_kill(Mother *self) {
+    free(self->data);
+    self->data = NULL;
+    self->a = 0;
+}
+
+void Mother_print(Mother *self, int pos) {
+    assert(pos>=0 && pos<self->a);
+    printf("%c", self->data[pos]);
+}
+
+// derived class Child
 typedef struct {
     // include data of mother at first place
-    Foo base;
+    Mother base;
 
-    // public data of Bar
-    float amplitude;
-} Bar;
+    // public data of Child
+    int b;
+} Child;
 
-void Bar_init(Bar *self, float amp) {
+void Child_init(Child *self, int beta) {
     // call super.init
-    // casting to Foo works, 
-    //   because the first data in Bar is Foo
-    Foo_init((Foo *) self);
-    self->amplitude = amp;
+    // casting to Mother works, 
+    //   because the first data in Child is Mother
+    Mother_init((Mother *) self, beta*2);
+    self->b = beta;
 }
 
-void Bar_kill(Bar *self) {
-    Foo_kill((Foo *) self);
-    self->amplitude = -1;
+void Child_kill(Child *self) {
+    Mother_kill((Mother *) self);
+    self->b = 0;
 }
 
-void Bar_amplify(Bar *self) {
-    self->amplitude *= 2;
+int Child_length(Child *self) {
+    return self->base.a - self->b;
 }
 
 
 // Usage:
 int main() {
-    Bar b;
-    Bar_init(&b);
+    Child c;
+    Child_init(&c, 10);
+
+    int len = Child_length(&c);
     
     // Call mother method:
-    Foo_print((Foo *) &b)
+    Mother_print((Mother *) &b, 5)
     
     // or...
-    Foo_print(&b.base);
+    Mother_print(&b.base, len);
 
-    Bar_kill(&b);
+    Child_kill(&b);
 }
 
 ```
 
+
+### <a name="S-oo-rtti"></a>RTTI
+RunTimeTypeInformation
 
 ### <a name="S-oo-virtual"></a>Virtual Methods
 
