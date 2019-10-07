@@ -21,6 +21,7 @@ IN ACTIVE WORK!
   - [Namespaces](#S-naming-namespaces)
   
 + [Object orientation in C](#S-oo)
+  - [When not to use](#S-oo-not)
   - [Simple machine](#S-oo-simple)
   - [Inheritance](#S-oo-inheritance)
   - [RTTI](#S-oo-rtti)
@@ -480,6 +481,25 @@ geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
 ## <a name="S-oo"></a>Object Orientation in C
 Although the C programming language doesn't support object orientated programming nativly,
 it's still possible and quite easy.
+
+### <a name="S-oo-not"></a>When not to use
+Unlike many do, you should NOT use OOP in every scenario!
+In most cases its unaccesary to use all features of it and it can slow down your program.
+Imagine you write a game in an OOP manner with the following hierarchy:
++ Item (base class)
+  - Invisible
+    * Ghost
+  - Visible
+    * Tree
+    * TreasureChest
+    * Moveable
+      + Player
+      + Enemy
+So you could have a list of all items (unsorted) and a loop that renders each with an overloaded method render.
+This is incredible slow for a normal modern CPU, because of cache misses.
+A slightly better approach would be to list all enemies packed in a seperate list and render these.
+A much better approuch is to pack all data that is necessary to render an enemy and loop over this list.
+In the performance critical section focus on the data, not the software.
 
 
 ### <a name="S-oo-simple"></a>Simple machine
