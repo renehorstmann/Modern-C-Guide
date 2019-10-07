@@ -695,6 +695,12 @@ int main() {
 Run time type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
 To achieve this, the root base class should have an identification string (as char array autotype).
 Or all root base classes inherit from an Object class that implements the string.
+These strings contain a keychained list of the class name hierarchy.
+For example if class Bar and class Pub dervie from class Foo, their type names would be:
++ class Foo - type "Foo"
+  - class Bar : Foo - type "FooBar"
+  - class Pub : Foo - type "FooPub"
++ class Car - type "Car"
 
 ```c
 
@@ -713,34 +719,50 @@ void *as_instance(void *object, const char *type) {
 }
 
 
-// class TypeA
+// class Foo
 typedef struct {
     Object base;
 
     int a;
-} TypeA;
+} Foo;
 
-const char *TypeA_TYPE = "TypeA";
+const char *Foo_TYPE = "Foo";
 
-void TypeA_init(TypeA *self) {
-    Object_init((Object *)self, TypeA_TYPE);
+void Foo_init(Foo *self) {
+    Object_init((Object *)self, Foo_TYPE);
     self->a = 1;
 }
 
-// class TypeAB : TypeA
+// class Bar : Foo
 typedef struct {
-    TypeA base;
+    Foo base;
 
     int b;
-} TypeAB;
+} Bar;
 
-const char *TypeAB_TYPE = "TypeATypeAB";
+const char *Bar_TYPE = "FooBar";
 
-void TypeAB_init(TypeAB *self) {
-    TypeA_init((TypeA *) self);
-    Object_init((Object *) self, TypeAB_TYPE);
+void Bar_init(Bar *self) {
+    Foo_init((Foo *) self);
+    Object_init((Object *) self, Bar_TYPE);
     self->b = 2;
 }
+
+// class Pub : Foo
+typedef struct {
+    Foo base;
+
+    int p;
+} Pub;
+
+const char *Pub_TYPE = "FooPub";
+
+void Pun_init(Pub *self) {
+    Foo_init((Foo *) self);
+    Object_init((Object *) self, Pub_TYPE);
+    self->p = 3;
+}
+
 
 // class Car
 typedef struct {
@@ -759,16 +781,19 @@ void Car_init(Car *self) {
 
 // usage
 int main() {
-    TypeAB ab;
-    TypeAB_init(&ab);
+    Bar b;
+    Bar_init(&b);
 
-    TypeA *as_a = as_instance(&ab, TypeA_TYPE);
-    if(as_a)
-         puts("is TypeA");
+    Foo *as_foo = as_instance(&b, Foo_TYPE);
+    if(as_foo)
+         puts("Bar is a Foo");
     
-    TypeAB *as_ab = as_instance(as_a, TypeAB_TYPE);
-    if(as_ab)
-         puts("is TypeAB");
+    Bar *as_bar = as_instance(as_foo, Bar_TYPE);
+    if(as_bar)
+         puts("Bar that was casted to Foo still is a Bar");
+
+    Pub *as_pub = as_instance(as_foo, Pub_TYPE);
+    assert(!as_pub);
 
     Car *as_car = as_instance(as_a, Car_TYPE); 
     assert(!as_car);
