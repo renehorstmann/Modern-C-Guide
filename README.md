@@ -560,7 +560,7 @@ void foo_print() {
 ```
 
 I like to call constructors ClassName_init and destructors ClassName_kill.
-If you stick with this, or another name, your users can easily find for other classes as well.
+If you stick with this, or another name, your users can easily find them for other classes as well.
 Destructors should always have the function form: void(ClassName *self)
 The same "machine", but with multiple possible instances looks like the following:
 
