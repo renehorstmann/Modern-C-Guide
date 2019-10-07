@@ -702,7 +702,11 @@ typedef struct {
     char type[64];
 } Object;
 
-void *is_instance(void *object, const char *type) {
+void Object_init(Object *self, const char *type) {
+    strcpy(self->type, type);
+}
+
+void *as_instance(void *object, const char *type) {
     if(strncmp(object, type, strlen(type)) == 0) 
         return object;
     return NULL;
@@ -719,7 +723,7 @@ typedef struct {
 const char *TypeA_TYPE = "TypeA";
 
 void TypeA_init(TypeA *self) {
-    strcpy(self, TypeA_TYPE);
+    Object_init((Object *)self, TypeA_TYPE);
     self->a = 1;
 }
 
@@ -734,7 +738,7 @@ const char *TypeAB_TYPE = "TypeATypeAB";
 
 void TypeAB_init(TypeAB *self) {
     TypeA_init((TypeA *) self);
-    strcpy(self, TypeAB_TYPE);
+    Object_init((Object *) self, TypeAB_TYPE);
     self->b = 2;
 }
 
@@ -748,7 +752,7 @@ typedef struct {
 const char *Car_TYPE = "Car";
 
 void Car_init(Car *self) {
-    strcpy(self, Car_TYPE);
+    Object_init((Object *) self, Car_TYPE);
     self->color = 0xff00ff;
 }
 
@@ -758,15 +762,15 @@ int main() {
     TypeAB ab;
     TypeAB_init(&ab);
 
-    TypeA *as_a = is_instance(&ab, TypeA_TYPE);
+    TypeA *as_a = as_instance(&ab, TypeA_TYPE);
     if(as_a)
          puts("is TypeA");
     
-    TypeAB *as_ab = is_instance(as_a, TypeAB_TYPE);
+    TypeAB *as_ab = as_instance(as_a, TypeAB_TYPE);
     if(as_ab)
          puts("is TypeAB");
 
-    Car *as_car = is_instance(as_a, Car_TYPE); 
+    Car *as_car = as_instance(as_a, Car_TYPE); 
     assert(!as_car);
 }
 ```
