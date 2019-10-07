@@ -795,7 +795,7 @@ int main() {
     Pub *as_pub = as_instance(as_foo, Pub_TYPE);
     assert(!as_pub);
 
-    Car *as_car = as_instance(as_a, Car_TYPE); 
+    Car *as_car = as_instance(as_foo, Car_TYPE); 
     assert(!as_car);
 }
 ```
