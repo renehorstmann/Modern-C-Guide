@@ -488,13 +488,14 @@ In most cases its unaccesary to use all features of it and it can slow down your
 Imagine you write a game in an OOP manner with the following hierarchy:
 + Item (base class)
   - Invisible
-    * Ghost
+    - Ghost
   - Visible
-    * Tree
-    * TreasureChest
-    * Moveable
-      + Player
-      + Enemy
+    - Tree
+    - TreasureChest
+    - Moveable
+      - Player
+      - Enemy
+
 So you could have a list of all items (unsorted) and a loop that renders each with an overloaded method render.
 This is incredible slow for a normal modern CPU, because of cache misses.
 A slightly better approach would be to list all enemies packed in a seperate list and render these.
