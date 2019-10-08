@@ -716,7 +716,7 @@ int main() {
 Run time type information is needed, to determine the type of a class at runtime (dynamic_cast/ isinstance/ instanceof/ etc.).
 To achieve this, the root base class should have an identification string (as char array autotype).
 Or all root base classes inherit from an Object class that implements the string.
-These strings contain a keychained list of the class name hierarchy.
+These strings contain a chained list of the class name hierarchy.
 For example if class Bar and class Pub dervie from class Foo, their type names would be:
 + class Foo - type "Foo"
   - class Bar : Foo - type "FooBar"
