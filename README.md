@@ -827,13 +827,13 @@ As with the rest of OOP, its easy to implement in C:
 
 ```c
 // Class Foo
-typedef struct {
+typedef struct Foo {
     // public data
     int f;
 
     // vtable (function ptr of the virtual methods)::
-    void (*print)(const Foo *self);
-    int (*add)(Foo *self, int add);
+    void (*print)(const struct Foo *self);
+    int (*add)(struct Foo *self, int add);
 
 } Foo;
 
@@ -895,7 +895,7 @@ int main() {
     Bar_init(&bar, 1.23f);
 
 
-    Foo *foos[2] = {&foo, &bar};
+    Foo *foos[2] = {&foo, (Foo*) &bar};
 
     for(int i=0; i<2; i++) {
         Foo *f = foos[i];
