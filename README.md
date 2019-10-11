@@ -822,6 +822,90 @@ int main() {
 ```
 
 ### <a name="S-oo-virtual"></a>Virtual Methods
+With virtual methods, the user must not know the exact Type, to call the right overlaoded class function (method).
+As with the rest of OOP, its easy to implement in C:
+
+```c
+// Class Foo
+typedef struct {
+    // public data
+    int f;
+
+    // vtable (function ptr of the virtual methods)::
+    void (*print)(const Foo *self);
+    int (*add)(Foo *self, int add);
+
+} Foo;
+
+void Foo_print(const Foo *self) {
+    printf("Foo(%d)\n", self->f);
+}
+
+int Foo_add(Foo *self, int add) {
+    int f = self->f;
+    self->f += add;
+    return f;
+}
+
+void Foo_init(Foo *self) {
+    self->f = 1;
+    self->print = Foo_print;
+    self->add = Foo_add;
+}
+
+
+// Class Bar : Foo
+typedef struct {
+    Foo base;
+
+    // public data of Bar
+    float b;
+} Bar;
+
+void Bar_print(const Bar *self) {
+    printf("Bar(%d,%f)\n", self->base.f, self->b);
+}
+
+int Bar_add(Bar *self, int add) {
+    // call super.add
+    int foo = Foo_add((Foo *) self, add);
+    
+    self->b += foo;
+    return foo;
+}
+
+void Bar_init(Bar *self, float init) {
+    // call super.init
+    Foo_init((Foo *) self);
+
+    self->b = init;
+
+    // change overloaded vtable methods
+    self->base.print = Bar_print;
+    self->base.add = Bar_add;
+}
+
+
+// Usage
+int main() {
+    Foo foo;
+    Foo_init(&foo);
+
+    Bar bar;
+    Bar_init(&bar, 1.23f);
+
+
+    Foo *foos[2] = {&foo, &bar};
+
+    for(int i=0; i<2; i++) {
+        Foo *f = foos[i];
+        f->add(f, 10);
+        f->print(f);
+    }
+
+}
+
+```
 
 
 
