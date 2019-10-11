@@ -869,8 +869,8 @@ void Bar_print(const Bar *self) {
 int Bar_add(Bar *self, int add) {
     // call super.add
     int foo = Foo_add((Foo *) self, add);
-    
-    self->b += foo;
+
+    self->b += (float) foo;
     return foo;
 }
 
@@ -881,8 +881,8 @@ void Bar_init(Bar *self, float init) {
     self->b = init;
 
     // change overloaded vtable methods
-    self->base.print = Bar_print;
-    self->base.add = Bar_add;
+    self->base.print = (void(*)(const Foo *)) Bar_print;  // optional cast...
+    self->base.add = (int(*)(Foo *, int)) Bar_add;
 }
 
 
@@ -895,7 +895,7 @@ int main() {
     Bar_init(&bar, 1.23f);
 
 
-    Foo *foos[2] = {&foo, (Foo*) &bar};
+    Foo *foos[2] = {&foo, (Foo *) &bar}; // optional cast...
 
     for(int i=0; i<2; i++) {
         Foo *f = foos[i];
@@ -904,6 +904,7 @@ int main() {
     }
 
 }
+
 
 ```
 
