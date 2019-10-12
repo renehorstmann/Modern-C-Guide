@@ -500,7 +500,7 @@ So you could have a list of all items (unsorted) and a loop that renders each wi
 This is incredible slow for a normal modern CPU, because of cache misses.
 A slightly better approach would be to list all enemies packed in a seperate list and render these.
 A much better approuch is to pack all data that is necessary to render an enemy and loop over this list.
-In the performance critical section focus on the data, not the software.
+In the performance critical section focus on data, not code.
 
 
 ### <a name="S-oo-simple"></a>Simple machine
