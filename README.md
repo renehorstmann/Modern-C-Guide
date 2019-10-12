@@ -822,7 +822,7 @@ int main() {
 ```
 
 ### <a name="S-oo-virtual"></a>Virtual Methods
-With virtual methods, the user must not know the exact Type, to call the right overlaoded class function (method).
+With virtual methods, the user must not know the exact type, to call the right overlaoded class function (method).
 As with the rest of OOP, its easy to implement in C:
 
 ```c
