@@ -917,10 +917,10 @@ In C you also must also add an void * for the implementation:
 
 ```c
 
-typedef struct {
+typedef struct Printable {
     void *impl_;
 
-    void (*print)(Printable *self);
+    void (*print)(struct Printable *self);
 } Printable;
 
 
@@ -957,6 +957,7 @@ void Foo_init(Foo *self) {
 int main() {
     Foo foo;
     Foo_init(&foo);
+    foo.f = 1.23f;
     
     bar(foo.printable, 3);
 }
