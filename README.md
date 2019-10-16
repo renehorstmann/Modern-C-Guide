@@ -26,7 +26,7 @@ IN ACTIVE WORK!
   - [Inheritance](#S-oo-inheritance)
   - [RTTI](#S-oo-rtti)
   - [Virtual Methods](#S-oo-virtual)
-  - Interfaces
+  - [Interfaces](#S-oo-interfaces)
 
 
 ## <a name="S-basics"></a>Basics
@@ -905,10 +905,60 @@ int main() {
 
 }
 
-
 ```
 
 
 
 
+### <a name="S-oo-interfaces"></a>Interfaces
+Often interfaces perform a better job, compared to inheritance, to provide an easy OOP-feel.
+An interface only consists of virtual methods and so is like an abstract class without data.
+In C you also must also add an void * for the implementation:
 
+```c
+
+typedef struct {
+    void *impl_;
+
+    void (*print)(Printable *self);
+} Printable;
+
+
+// class Foo
+typedef struct {
+    float f;
+
+    Printable printable;
+} Foo;
+
+// function that takes a Printable
+void bar(Printable p, int n) {
+    for(int i=0; i<n; i++) 
+        p.print(&p);
+}
+
+
+
+void Foo_print(Printable *self) {
+    Foo *foo = (Foo *) self->impl_;
+    printf("Foo(%f)\n", foo->f);
+}
+
+void Foo_init(Foo *self) {
+    self->f = 0;
+    self->printable = (Printable) {
+        (void *) self,    // opt. cast
+        Foo_print
+    };
+}
+
+
+// usage
+int main() {
+    Foo foo;
+    Foo_init(&foo);
+    
+    bar(foo.printable, 3);
+}
+
+```
