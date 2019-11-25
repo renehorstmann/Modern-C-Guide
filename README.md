@@ -110,8 +110,7 @@ void bar() {
 If you have a complicated function, 
 in where you must free and close on multiple areas,
 break it into small helper functions, 
-or use a clean section with gotos, 
-or use my [Utilc/Scope](https://github.com/renehorstmann/Utilc#S-Scope).
+or use a clean section with gotos.
 
 ```c
 // bad example:
