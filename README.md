@@ -70,33 +70,35 @@ A more modern way is to return a static const string, or NULL if no error occure
 If you get an error, you can directly read it in the debug session.
 ```c
 // somewhere in a header
-typedef const char *Error;
-extern Error ERROR_NullPointer;
-extern Error ERROR_FileNotFound;
+typedef const char *err;
+// optional error message links:
+extern err NullPointerError;
+extern err FileNotFound;
 // ...
 
 // somewhere in a source
-Error ERROR_NullPointer = "NullPointer";
-Error ERROR_FileNotFound = "FileNotFound";
+// the error message should be the same as its global name
+err NullPointerError = "NullPointerError";
+err FileNotFound = "FileNotFound";
 
 // function that can throw an error
-Error foo(int *a) {
+err foo(int *a) {
     if(!a)
-        return ERROR_NullPointer;
+        return NullPointerError;
 
     if(*a < 0)
-        return "fooCustomError";
+        return "@fooCustomError";
 
     return NULL; // success
 }
 
 // using foo
 void bar() {
-    Error err = foo(NULL);
-    if(err) {
+    err e = foo(NULL);
+    if(e) {
 
         // direct pointer check
-        if(err == ERROR_FileNotFound)
+        if(e == FileNotFoundError)
              ; // handle error
 
         //...
@@ -106,6 +108,10 @@ void bar() {
     }
 }
 ```
+If the user gets an unknown error, 
+its also possible to create the extern linkage by himself.
+E. g. The error message "IOError" needs "extern err IOError;" to get the address.
+
 
 If you have a complicated function, 
 in where you must free and close on multiple areas,
