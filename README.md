@@ -127,7 +127,7 @@ int complicated() {
     // ...
 
     // pre allocate data
-    data = malloc(16);
+    data = malloc(16000);
     if(!data) {
         fclose(file);
         return 1;
