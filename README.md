@@ -70,19 +70,19 @@ A more modern way is to return a static const string, or NULL if no error occure
 If you get an error, you can directly read it in the debug session.
 ```c
 // somewhere in a header
-typedef const char *err;
+typedef const char *error;
 // optional error message links:
-extern err NullPointerError;
-extern err FileNotFound;
+extern error NullPointerError;
+extern error FileNotFound;
 // ...
 
 // somewhere in a source
 // the error message should be the same as its global name
-err NullPointerError = "NullPointerError";
-err FileNotFound = "FileNotFound";
+error NullPointerError = "NullPointerError";
+error FileNotFound = "FileNotFound";
 
 // function that can throw an error
-err foo(int *a) {
+error foo(int *a) {
     if(!a)
         return NullPointerError;
 
@@ -94,7 +94,7 @@ err foo(int *a) {
 
 // using foo
 void bar() {
-    err e = foo(NULL);
+    error e = foo(NULL);
     if(e) {
 
         // direct pointer check
@@ -104,13 +104,13 @@ void bar() {
         //...
   
         // print the error
-        print("Error @ foo: %s\n", err);
+        print("Error @ foo: %s\n", e);
     }
 }
 ```
 If the user gets an unknown error, 
 its also possible to create the extern linkage by himself.
-E. g. The error message "IOError" needs "extern err IOError;" to get the address.
+E. g. The error message "IOError" needs "extern error IOError;" to get the address.
 
 
 If you have a complicated function, 
@@ -155,7 +155,7 @@ Turn the code above into this:
 
 ```c
 // splitted function:
-static Error parse_file_(const FILE *file, int *data) {
+static error parse_file_(const FILE *file, int *data) {
     float a, b;
     int read = fscanf(file, "%f %f", &a, &b);
     if(read != 2)
@@ -167,13 +167,13 @@ static Error parse_file_(const FILE *file, int *data) {
 }
 
 
-Error complicated() {
-    Error err; // instantiate because of multiple uses
+error complicated() {
+    error err; // instantiate because of multiple uses
 
     // pre allocate data
-    data = malloc(16);
+    data = malloc(16000);
     if(!data)
-        return "AllocError";
+        return "AllocationError";
 
     // open file at first usage
     FILE *file = fopen("file.txt", "r");
@@ -194,10 +194,10 @@ Error complicated() {
 Or/ and use a cleanup section at the functions end:
 
 ```c
-Error complicated() {
+error complicated() {
     // In this case, all needed stuff for cleaning
     // should be instantiated here
-    Error err = NULL;
+    error err = NULL;
     int *data = NULL; // its safe to free(NULL)
 
     // ...
