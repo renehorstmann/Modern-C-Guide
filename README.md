@@ -924,7 +924,7 @@ In C you also must also add an void * for the implementation:
 typedef struct Printable {
     void *impl_;
 
-    void (*print)(struct Printable *self);
+    void (*print)(struct Printable self);
 } Printable;
 
 
@@ -938,13 +938,13 @@ typedef struct {
 // function that takes a Printable
 void bar(Printable p, int n) {
     for(int i=0; i<n; i++) 
-        p.print(&p);
+        p.print(p);
 }
 
 
 
-void Foo_print(Printable *self) {
-    Foo *foo = (Foo *) self->impl_;
+void Foo_print(Printable self) {
+    Foo *foo = (Foo *) self.impl_;
     printf("Foo(%f)\n", foo->f);
 }
 
