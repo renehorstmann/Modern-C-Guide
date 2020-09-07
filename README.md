@@ -64,6 +64,7 @@ void foo() {
 
 
 ### <a name="S-basics-errors"></a>Error Handling
+
 If it is possible, always write functions that do not produce any errors at all.
 For example:
 ```c
@@ -77,16 +78,69 @@ int count_char(const char *string, char c) {
     }
     return cnt;
 }
+
+vec3 rgb2hsv(vec3 rgb) {
+    // rgb must be in range [0:1]
+    // instead of reporting an error, we just clamp the values
+   
+    rgb = vec3_clamp(rgb, 0, 1); // see Mathc
+   
+    // ...
+}
+```
+
+If you must do some error management, determine the type of error:
+- Compile time
+- Debug time
+- Run time
+  - should crash the whole program
+  - should crash the library/module
+  - should inform the user
+
+#### Compile Time
+If a function/macro is completely misused, try to generate a compile warning/error.
+For example:
+```c
+// array size may be < 3
+void very_bad_array3_zero(float *array3) {
+    memset(array3, 0, 3 * sizeof(float));
+}
+
+
+// array size may also be <  if the function is called
+typedef float array3[3];
+
+void bad_array3_zero(array3 arr) {
+    memset(arr, 0, sizeof(array3);
+}
+
+
+// compiler will at least throw a warning, if the type is wrong
+typedef struct {
+    float a[3];
+} Array3_s;
+
+void good_array3_zero(Array3_s *arr) {
+    memset(arr, 0, sizeof(Array3_s);
+}
+```
+
+#### Debug Time
+If a function is misused, use assertions.
+For example:
+```c
+static int machine;
+void machine_start() {
+    machine = 1;
+}
+
+void machine_send(int msg) {
+    assert(machine != 0 && "machine_start() called?);
+    printf("%d\n", msg);
+}
 ```
 
 *Todo*
-
-2. Type of error
-  - Compile time
-  - Debug runtime
-  - runtime but should crash everything
-  - runtime but should crash the library/module
-  - runtime
 
 2. If state would be changed, make the state illegal, so that upcoming functions wont crash
 
