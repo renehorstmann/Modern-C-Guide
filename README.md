@@ -64,10 +64,22 @@ void foo() {
 
 
 ### <a name="S-basics-errors"></a>Error Handling
+If it is possible, always write functions that do not produce any errors at all.
+For example:
+```c
+int count_char(const char *string, char c) {
+    if(!string)
+        return 0; // simply return 0 if the string is invalid
+    int cnt = 0;
+    while(*string) {
+        if(*string++ == c)
+            cnt++;
+    }
+    return cnt;
+}
+```
 
 *Todo*
-
-1. Do not allow an error
 
 2. Type of error
   - Compile time
