@@ -140,13 +140,15 @@ void machine_start() {
 }
 
 void machine_send(int msg) {
-    assert(machine != 0 && "machine_start() called?);
+    assert(machine != 0 && "machine_start() called?");
     printf("%d\n", msg);
 }
 
 void machine_work(int *data, int n) {
-    // optional: (will raise SIGSEGV on accessing NULL)
+    // optional:
     // assert(data && "must not be NULL");
+    // if data is NULL, a segmentation fault is raised (SIGSEGV)
+    // A seg fault is as informing as an assert imho
     for(int i=0; i<n; i++)
         printf("%d\n", data[i]);
 }
