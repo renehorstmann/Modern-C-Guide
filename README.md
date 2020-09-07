@@ -144,13 +144,12 @@ void machine_send(int msg) {
     printf("%d\n", msg);
 }
 
-
-// will raise SIGSEGV (segmentation fault) if data is NULL
 void machine_work(int *data, int n) {
+    // optional: (will raise SIGSEGV on accessing NULL)
+    // assert(data && "must not be NULL");
     for(int i=0; i<n; i++)
         printf("%d\n", data[i]);
 }
-// if you want an error msg, use an assert like assert(data && "data must not be NULL");
 ```
 
 *Todo*
