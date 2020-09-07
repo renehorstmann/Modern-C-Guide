@@ -64,161 +64,29 @@ void foo() {
 
 
 ### <a name="S-basics-errors"></a>Error Handling
-Don't use setjmp and longjmp!
-The old way was/ is to indicate an error by a return value of -1 and set a global error code (errno).
-A more modern way is to return a static const string, or NULL if no error occured.
-If you get an error, you can directly read it in the debug session.
-```c
-// somewhere in a header
-typedef const char *error;
-// optional error message links:
-extern error NullPointerError;
-extern error FileNotFound;
-// ...
 
-// somewhere in a source
-// the error message should be the same as its global name
-error NullPointerError = "NullPointerError";
-error FileNotFound = "FileNotFound";
+*Todo*
 
-// function that can throw an error
-error foo(int *a) {
-    if(!a)
-        return NullPointerError;
+1. Do not allow an error
 
-    if(*a < 0)
-        return "@fooCustomError";
+2. Type of error
+  - Compile time
+  - Debug runtime
+  - runtime but should crash everything
+  - runtime but should crash the library/module
+  - runtime
 
-    return NULL; // success
-}
+2. If state would be changed, make the state illegal, so that upcoming functions wont crash
 
-// using foo
-void bar() {
-    error e = foo(NULL);
-    if(e) {
+3. How to represent the error
+  - global state
+    - should get a callback function
+  - always returns error value
+  - return struct union, created by macro?
+  - long jump?
 
-        // direct pointer check
-        if(e == FileNotFoundError)
-             ; // handle error
+4. What about bindings
 
-        //...
-  
-        // print the error
-        print("Error @ foo: %s\n", e);
-    }
-}
-```
-If the user gets an unknown error, 
-its also possible to create the extern linkage by himself.
-E. g. The error message "IOError" needs "extern error IOError;" to get the address.
-
-
-If you have a complicated function, 
-in where you must free and close on multiple areas,
-break it into small helper functions, 
-or use a clean section with gotos.
-
-```c
-// bad example:
-int complicated() {
-    FILE *file = fopen("file.txt", "r");
-    int *data;
-
-    // ...
-
-    // pre allocate data
-    data = malloc(16000);
-    if(!data) {
-        fclose(file);
-        return 1;
-    }
-
-    // ...
-
-    // parse file
-    float a, b;
-    int read = fscanf(file, "%f %f", &a, &b);
-    if(read != 2) {
-        fclose(file);
-        free(data);
-        return 2;
-    } 
-
-    // ... probably more code with exit conditions
-
-    fclose(file);
-    free(data);
-    return 0;
-}
-```
-Turn the code above into this:
-
-```c
-// splitted function:
-static error parse_file_(const FILE *file, int *data) {
-    float a, b;
-    int read = fscanf(file, "%f %f", &a, &b);
-    if(read != 2)
-        return "ParseError";
-    
-    // ...
-    
-    return NULL;
-}
-
-
-error complicated() {
-    error err; // instantiate because of multiple uses
-
-    // pre allocate data
-    data = malloc(16000);
-    if(!data)
-        return "AllocationError";
-
-    // open file at first usage
-    FILE *file = fopen("file.txt", "r");
-    err = parse_file_(file, data);
-    fclose(file);
-    if(err) {
-        free(data);
-        return err;
-    }
-
-    // ...
-
-    free(data);
-    return NULL;
-}
-```
-
-Or/ and use a cleanup section at the functions end:
-
-```c
-error complicated() {
-    // In this case, all needed stuff for cleaning
-    // should be instantiated here
-    error err = NULL;
-    int *data = NULL; // its safe to free(NULL)
-
-    // ...
-
-    // file is only used here, so as above:
-    // open file at first usage
-    FILE *file = fopen("file.txt", "r");
-    err = parse_file_(file, data);
-    fclose(file);
-    if(err)
-        goto CLEAN_UP;
-    
-    // ...
-
-    CLEAN_UP:
-    free(data);
-    return err;
-}
-
-
-```
 
 
 ### <a name="S-basics-autotypes"></a>Prefer autotypes
