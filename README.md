@@ -123,6 +123,11 @@ typedef struct {
 void good_array3_zero(Array3_s *arr) {
     memset(arr, 0, sizeof(Array3_s);
 }
+
+// will not compile if not used properly
+Array3_s very_good_array3_zero() {
+    return (Array3_s) {0};
+}
 ```
 
 #### Debug Time
@@ -137,6 +142,14 @@ void machine_start() {
 void machine_send(int msg) {
     assert(machine != 0 && "machine_start() called?);
     printf("%d\n", msg);
+}
+
+// will raise SIGSEGV (segmentation fault) if data is NULL
+// no assert(data) needed, cause the signal is as informing as tge assert
+//     of course, if you want to print more stuff, use an assert...
+void machine_work(int *data, int n) {
+    for(int i=0; i<n; i++)
+        printf("%d\n", data[i]);
 }
 ```
 
