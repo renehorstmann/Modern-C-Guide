@@ -197,13 +197,16 @@ typedef struct {
 int reader_next_int(Reader *self) {
     int res = 0;
     // only read if Reader is valid and make it illegal on error
-    if(self->f && fscanf(self->f, "%d", &res) != 1)
-         self->f = NULL;
+    if(self->f) {
+         if(fscanf(self->f, "%d", &res) != 1)
+              self->f = NULL;
+    }
     return res;
 }
 // in this example, the FILE* is the state and determines if the Reader is valid
-// each method / function working on Reader, must check if the reader is valid and set in invalid
-//    if an error occured
+// each method/function working on Reader,
+//    must check if the reader is valid 
+//    and set it invalid if an error occured
 
 void main() {
     puts("Give me 3 ints...");
