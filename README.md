@@ -173,12 +173,58 @@ void runtime_assert() {
     assume(a>0, "get_positive failed");  // see my Utilc repository
     printf("%d\n", 1/a );
 }
+```
+
+#### Run Time Module Crash
+If you do not want a module to crash the whole program, you have two options:
+- Sandbox the module in an own process with fork
+- Recover from a function call with a signal handler and long jumps
+
+#### Run Time Error
+If the error is common, report the error with its function to the user.
+This seems to be the default, but consider the above options to minimize these.
+
+##### Illegal state
+If you have multiple functions, that use the same state, make the state illegal if a function fails.
+So you must not check every function for a failure and just all functions in a row.
+For example:
+```c
+typedef struct {
+    FILE *f;
+    // ...
+} Reader;
+
+int reader_next_int(Reader *self) {
+    int res = 0;
+    // only read if Reader is valid and make it illegal on error
+    if(self->f && fscanf(self->f, "%d", &res) != 1)
+         self->f = NULL;
+    return res;
+}
+// in this example, the FILE* is the state and determines if the Reader is valid
+// each method / function working on Reader, must check if the reader is valid and set in invalid
+//    if an error occured
+
+void main() {
+    puts("Give me 3 ints...");
+
+    Reader r = {stdin};
+    
+    // multiple calls, but only one check:
+    int a = reader_next_int(&r);
+    int b = reader_next_int(&r);
+    int c = reader_next_int(&r);
+
+    // check for an error
+    if(!r.f)
+        puts("I said ints!!!");
+    else
+        printf("sum is %d\n", a+b+c);
+}
 
 ```
 
 *Todo*
-
-2. If state would be changed, make the state illegal, so that upcoming functions wont crash
 
 3. How to represent the error
   - global state
