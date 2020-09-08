@@ -6,12 +6,22 @@ In this repository I'll show you my recommendations for a good coding style in t
 
 ## <a name="S-contents"></a>Contents
 
-+ [Basics](#S-basics)
+- [Basics](#S-basics)
   - [Where to put variable instantiations](#S-basics-where_variables)
-  - [Error handling](#S-basics-errors)
   - [Prefer autotypes](#S-basics-autotypes)
+  
+- [Error handling](#S-err)
+  - [Avoid when possible](#S-err-avoid_when_possible)
+  - [Error delivery](#S-err-error_delivery)
+    - [Compile Time](#S-err-compile_time)
+    - [Debug Time](#S-err-debug_time)
+    - [Run Time](#S-err-run_time)
+      - [Signals](#S-err-signals)
+      - [Parameter](#S-err-parameter)
+  - [Illegal State](#S-err-illegal_state)
+  - [Error Paramter Options](#S-err-error_parameter_options)
 
-+ [Naming](#S-naming)
+- [Naming](#S-naming)
   - [Variables](#S-naming-variables)
   - [Functions](#S-naming-functions)
   - [Macros](#S-naming-macros)
@@ -19,7 +29,7 @@ In this repository I'll show you my recommendations for a good coding style in t
   - [Classes](#S-naming-classes)
   - [Namespaces](#S-naming-namespaces)
   
-+ [Object orientation in C](#S-oo)
+- [Object orientation in C](#S-oo)
   - [When not to use](#S-oo-not)
   - [Simple machine](#S-oo-simple)
   - [Inheritance](#S-oo-inheritance)
@@ -60,10 +70,26 @@ void foo() {
 }
 ```
 
+### <a name="S-basics-autotypes"></a>Prefer autotypes
+Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = malloc(64).
+Its not only faster, but you also dont need to worry about freeing memory.
+Structs that represents dynamic arrays can also make use of them:
+```c
+// An autotype struct that can safe up to 1024 indices (ints)
+typedef struct {
+    int data[1024];
+    int size;
+} indices;
+```
+The disadvantage is of course, that these array autotypes are limited in size, 
+but if the contents are small emough, always prefer them.
 
 
 
-### <a name="S-basics-errors"></a>Error Handling
+
+## <a name="S-err"></a>Error handling
+
+### <a name="S-err-avoid_when_possible"></a> Avoid when possible
 If possible, always write functions that do not produce any errors at all.
 For example:
 ```c
@@ -88,6 +114,7 @@ vec3 rgb2hsv(vec3 rgb) {
 }
 ```
 
+### <a name="S-err-error_delivery"></a> Error delivery
 If you must do some error management, determine what the error should do:
 - Compile time error
 - Debug time error
@@ -96,7 +123,8 @@ If you must do some error management, determine what the error should do:
   - should crash the library/module
   - should inform the user
 
-#### Compile Time
+
+#### <a name="S-err-compile_time"></a> Compile Time
 If a function/macro is completely misused, try to generate a compile warning/error.
 For example:
 ```c
@@ -129,7 +157,8 @@ Array3_s very_good_array3_zero() {
 }
 ```
 
-#### Debug Time
+
+#### <a name="S-err-debug_time"></a> Debug Time
 If a function is misused, use assertions.
 For example:
 ```c
@@ -152,8 +181,9 @@ void machine_work(int *data, int n) {
         printf("%d\n", data[i]);
 }
 ```
-
-#### Run Time Program Crash
+      
+#### <a name="S-err-run_time"></a> Run Time
+##### <a name="S-err-signals"></a> Signals
 In some cases, its not worth to do proper error management and just let the program die.
 For example:
 ```c
@@ -174,17 +204,16 @@ void runtime_assert() {
     printf("%d\n", 1/a );
 }
 ```
-
-#### Run Time Module Crash
 If you do not want a module to crash the whole program, you have two options:
 - Sandbox the module in an own process with fork
 - Recover from a function call with a signal handler and long jumps
 
-#### Run Time Error
+##### <a name="S-err-parameter"></a> Parameter
 If the error is common, report the error with its function to the user.
 This seems to be the default, but consider the above options to minimize these.
 
-##### Illegal state
+
+### <a name="S-err-illegal_state"></a> Illegal state
 If you have multiple functions, that use the same state, make the state illegal if a function fails.
 So you must not check every function for a failure and just once for all functions in a row.
 For example:
@@ -237,6 +266,9 @@ int main() {
 
 ```
 
+
+### <a name="S-err-error_parameter_options"></a> Error Parameter Options
+  
 *Todo*
 
 3. How to represent the error
@@ -248,21 +280,6 @@ int main() {
 
 4. What about bindings
 
-
-
-### <a name="S-basics-autotypes"></a>Prefer autotypes
-Always prefer autotypes, e. g. use char str[64] instead of char *str_heap = malloc(64).
-Its not only faster, but you also dont need to worry about freeing memory.
-Structs that represents dynamic arrays can also make use of them:
-```c
-// An autotype struct that can safe up to 1024 indices (ints)
-typedef struct {
-    int data[1024];
-    int size;
-} indices;
-```
-The disadvantage is of course, that these array autotypes are limited in size, 
-but if the contents are small emough, always prefer them.
 
 
 
