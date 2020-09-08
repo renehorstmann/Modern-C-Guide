@@ -189,6 +189,8 @@ If you have multiple functions, that use the same state, make the state illegal 
 So you must not check every function for a failure and just once for all functions in a row.
 For example:
 ```c
+#include <stdio.h>
+
 typedef struct {
     FILE *f;
     // ...
@@ -208,7 +210,7 @@ int reader_next_int(Reader *self) {
 //    must check if the reader is valid 
 //    and set it invalid if an error occured
 
-void main() {
+int main() {
     puts("Give me 3 ints...");
 
     Reader r = {stdin};
