@@ -370,7 +370,7 @@ struct uncommon uc;
 #### <a name="S-naming-structs-usecases"></a>Use Cases
 As explained in Chapter [Prefer autotypes](#S-basics-autotypes), you should always prefer autotype structs.
 Autotype structs should be marked, so the user can directly identify them.
-I use (short) lowercasewithoutunderscores names for them:
+I use (short) lowercasewithoutunderscores names or PascalCase_s for longer names of them:
 
 ```c
 // Autotype structs
@@ -393,6 +393,12 @@ typedef struct {
     point data[1024];
     int size;
 } pointarray;
+
+typedef struct {
+    int render_options;
+    int state;
+    bool mode3d;
+} RenderStateAttributes_s;
 ```
 
 Structs that own data on heap, or classes, needs to be killed/ freed.
@@ -408,7 +414,7 @@ typedef struct {
 } String;
 
 // Destructor:
-void String_kill(String *self) {
+void string_kill(String *self) {
     free(self->str);
     self->str = NULL;
 }
@@ -420,20 +426,20 @@ typedef struct {
 } IntArray;
 
 // Constructor
-void IntArray_init(IntArray *self, int size) {
+void int_array_init(IntArray *self, int size) {
     self->data = calloc(size, sizeof(int));
     self->size = size;
 }
 
 // Destructor
-void IntArray_kill(IntArray *self) {
+void int_array_kill(IntArray *self) {
     free(self->data);
     self->data = NULL;
     self->size = NULL;
 }
 
 // Method
-void IntArray_push(IntArray *self, int append) {
+void int_array_push(IntArray *self, int append) {
     self->data = realloc(self->data, ++self->size * sizeof(int));
     self->data[self->size-1] = append;
 }
@@ -442,8 +448,8 @@ void IntArray_push(IntArray *self, int append) {
 ### <a name="S-naming-classes"></a>Classes
 As seen in the previos example above, I prefer PascalCase for classes.
 The data section of the class gets the ClassName.
-The constructor is called ClassName_init and the destructor ClassName_kill.
-All methods also use this naming sheme, like ClassName_length.
+The constructor is called class_name_init and the destructor class_name_kill.
+All methods also use this naming sheme, like class_name_length.
 With this style and an ide with autocompletion, the user gets a similar feeling to an object orientated language.
 
 
@@ -452,7 +458,7 @@ If you write a small library with a handful of good used names in the interface,
 For example a library that loads a .csv file, can use an interface header like this:
 
 ```c 
-// No namespace needed
+// No namespace needed (ok, csv is the namespace, but you get it...)
 
 // csv.h
 #ifndef CSV_H
@@ -504,9 +510,9 @@ typedef struct {
 typedef struct {
     geo_point *data;
     int size;
-} geo_PointArray;
+} GeoPointArray;
 
-void geo_PointArray_kill(geo_PointArray *self) {
+void geo_point_array_kill(GeoPointArray *self) {
     free(self->data);
     self->data = NULL;
     self->size = 0;
@@ -525,7 +531,7 @@ void geo_PointArray_kill(geo_PointArray *self) {
 /**
  * @returns: all points that lie in the circle
  */
-geo_PointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
+GeoPointArray geo_points_in_circle(geo_point *array, int n, geo_circle circle);
 
 #endif // GEO_INTERSECTION_H
 ```
@@ -555,6 +561,7 @@ This is incredible slow for a normal modern CPU, because of cache misses.
 A slightly better approach would be to list all enemies packed in a seperate list and render these.
 A much better approuch is to pack all data that is necessary to render an enemy and loop over this list.
 In the performance critical section focus on data, not code.
+If you still want an OO-Hierarchy, take the focos on the data, and than let your class point to the data, instead to own it.
 
 
 ### <a name="S-oo-simple"></a>Simple machine
@@ -613,7 +620,7 @@ void foo_print() {
 
 ```
 
-I like to call constructors ClassName_init and destructors ClassName_kill.
+I like to call constructors class_name_init and destructors class_name_kill.
 If you stick with this, or another name, your users can easily find them for other classes as well.
 Destructors should always have the function form: void(ClassName *self)
 The same "machine", but with multiple possible instances looks like the following:
@@ -634,21 +641,21 @@ typedef struct {
 } Foo;
 
 // constructor
-void Foo_init(Foo *self);
+void foo_init(Foo *self);
 
 // destructor
-void Foo_kill(Foo *self);
+void foo_kill(Foo *self);
 
 // methods:
-void Foo_add(Foo *self, int add);
+void foo_add(Foo *self, int add);
 
-void Foo_print(const Foo *self);
+void foo_print(const Foo *self);
 
 // optional heap constructor
-Foo *Foo_new();
+Foo *foo_new();
 
 // optional heap destructor
-void Foo_killfree(Foo *self);
+void foo_delete(Foo *self);
 
 
 //
@@ -657,33 +664,33 @@ void Foo_killfree(Foo *self);
 
 #include "foo.h" 
 
-void Foo_init(Foo *self) {
+void foo_init(Foo *self) {
     self->cnt = 1;
     self->internal_cnt = -1;
 }
 
-void Foo_kill(Foo *self) {
+void foo_kill(Foo *self) {
     // free memory, close files...
     self->cnt = 0;
 }
 
-void Foo_add(Foo *self, int add) {
+void foo_add(Foo *self, int add) {
     self->cnt += add;
 }
 
-void Foo_print(const Foo *self) {
+void foo_print(const Foo *self) {
     printf("foo %d\n", self->cnt+self->internal_cnt);
 }
 
 
-Foo *Foo_new() {
+Foo *foo_new() {
     Foo *res = malloc(sizeof(Foo));
-    Foo_init(res);
+    foo_init(res);
     return res;
 }
 
-void Foo_killfree(Foo *self) {
-    Foo_kill(self);
+void Foo_delete(Foo *self) {
+    foo_kill(self);
     free(self);
 }
 
@@ -704,18 +711,18 @@ typedef struct {
     int a;
 } Mother;
 
-void Mother_init(Mother *self, int amount) {
+void mother_init(Mother *self, int amount) {
     self->data = malloc(amount);
     self->a = amount;
 }
 
-void Mother_kill(Mother *self) {
+void mother_kill(Mother *self) {
     free(self->data);
     self->data = NULL;
     self->a = 0;
 }
 
-void Mother_print(Mother *self, int pos) {
+void mother_print(Mother *self, int pos) {
     assert(pos>=0 && pos<self->a);
     printf("%c", self->data[pos]);
 }
@@ -729,20 +736,20 @@ typedef struct {
     int b;
 } Child;
 
-void Child_init(Child *self, int beta) {
+void child_init(Child *self, int beta) {
     // call super.init
     // casting to Mother works, 
     //   because the first data in Child is Mother
-    Mother_init((Mother *) self, beta*2);
+    mother_init((Mother *) self, beta*2);
     self->b = beta;
 }
 
-void Child_kill(Child *self) {
-    Mother_kill((Mother *) self);
+void child_kill(Child *self) {
+    mother_kill((Mother *) self);
     self->b = 0;
 }
 
-int Child_length(Child *self) {
+int child_length(Child *self) {
     return self->base.a - self->b;
 }
 
@@ -750,17 +757,17 @@ int Child_length(Child *self) {
 // Usage:
 int main() {
     Child c;
-    Child_init(&c, 10);
+    child_init(&c, 10);
 
-    int len = Child_length(&c);
+    int len = child_length(&c);
     
     // Call mother method:
-    Mother_print((Mother *) &c, 5)
+    mother_print((Mother *) &c, 5)
     
     // or...
-    Mother_print(&c.base, len);
+    mother_print(&c.base, len);
 
-    Child_kill(&c);
+    child_kill(&c);
 }
 
 ```
@@ -783,7 +790,7 @@ typedef struct {
     char type[64];
 } Object;
 
-void Object_init(Object *self, const char *type) {
+void object_init(Object *self, const char *type) {
     strcpy(self->type, type);
 }
 
@@ -801,10 +808,10 @@ typedef struct {
     int a;
 } Foo;
 
-const char *Foo_TYPE = "Foo";
+const char *FOO_TYPE = "Foo";
 
-void Foo_init(Foo *self) {
-    Object_init((Object *)self, Foo_TYPE);
+void foo_init(Foo *self) {
+    object_init((Object *)self, FOO_TYPE);
     self->a = 1;
 }
 
@@ -815,11 +822,11 @@ typedef struct {
     int b;
 } Bar;
 
-const char *Bar_TYPE = "FooBar";
+const char *BAR_TYPE = "FooBar";
 
-void Bar_init(Bar *self) {
-    Foo_init((Foo *) self);
-    Object_init((Object *) self, Bar_TYPE);
+void bar_init(Bar *self) {
+    foo_init((Foo *) self);
+    object_init((Object *) self, BAR_TYPE);
     self->b = 2;
 }
 
@@ -830,11 +837,11 @@ typedef struct {
     int p;
 } Pub;
 
-const char *Pub_TYPE = "FooPub";
+const char *PUB_TYPE = "FooPub";
 
-void Pun_init(Pub *self) {
-    Foo_init((Foo *) self);
-    Object_init((Object *) self, Pub_TYPE);
+void pub_init(Pub *self) {
+    foo_init((Foo *) self);
+    object_init((Object *) self, PUB_TYPE);
     self->p = 3;
 }
 
@@ -846,10 +853,10 @@ typedef struct {
     int color;
 } Car;
 
-const char *Car_TYPE = "Car";
+const char *CAR_TYPE = "Car";
 
-void Car_init(Car *self) {
-    Object_init((Object *) self, Car_TYPE);
+void car_init(Car *self) {
+    object_init((Object *) self, CAR_TYPE);
     self->color = 0xff00ff;
 }
 
@@ -857,7 +864,7 @@ void Car_init(Car *self) {
 // usage
 int main() {
     Bar b;
-    Bar_init(&b);
+    bar_init(&b);
 
     Foo *as_foo = as_instance(&b, Foo_TYPE);
     if(as_foo)
@@ -881,30 +888,35 @@ As with the rest of OOP, its easy to implement in C:
 
 ```c
 // Class Foo
+struct Foo;
+
+// Virtual function types
+typedef void (*foo_print_function)(const struct Foo *self);
+typedef int (*foo_add_function)(struct Foo *self, int add);
+
 typedef struct Foo {
     // public data
     int f;
 
     // vtable (function ptr of the virtual methods)::
-    void (*print)(const struct Foo *self);
-    int (*add)(struct Foo *self, int add);
-
+    foo_print_function print;
+    foo_add_function add;
 } Foo;
 
-void Foo_print(const Foo *self) {
+void foo_print(const Foo *self) {
     printf("Foo(%d)\n", self->f);
 }
 
-int Foo_add(Foo *self, int add) {
+int foo_add(Foo *self, int add) {
     int f = self->f;
     self->f += add;
     return f;
 }
 
-void Foo_init(Foo *self) {
+void foo_init(Foo *self) {
     self->f = 1;
-    self->print = Foo_print;
-    self->add = Foo_add;
+    self->print = foo_print;
+    self->add = foo_add;
 }
 
 
@@ -916,37 +928,37 @@ typedef struct {
     float b;
 } Bar;
 
-void Bar_print(const Bar *self) {
+void bar_print(const Bar *self) {
     printf("Bar(%d,%f)\n", self->base.f, self->b);
 }
 
-int Bar_add(Bar *self, int add) {
+int bar_add(Bar *self, int add) {
     // call super.add
-    int foo = Foo_add((Foo *) self, add);
+    int foo = foo_add((Foo *) self, add);
 
     self->b += (float) foo;
     return foo;
 }
 
-void Bar_init(Bar *self, float init) {
+void bar_init(Bar *self, float init) {
     // call super.init
-    Foo_init((Foo *) self);
+    foo_init((Foo *) self);
 
     self->b = init;
 
     // change overloaded vtable methods
-    self->base.print = (void(*)(const Foo *)) Bar_print;  // optional cast...
-    self->base.add = (int(*)(Foo *, int)) Bar_add;
+    self->base.print = (foo_print_function) bar_print;  // optional cast...
+    self->base.add = (foo_add_function) bar_add;
 }
 
 
 // Usage
 int main() {
     Foo foo;
-    Foo_init(&foo);
+    foo_init(&foo);
 
     Bar bar;
-    Bar_init(&bar, 1.23f);
+    bar_init(&bar, 1.23f);
 
 
     Foo *foos[2] = {&foo, (Foo *) &bar}; // optional cast...
@@ -971,10 +983,16 @@ In C you also must also add an void * for the implementation:
 
 ```c
 
+// Interface Printable
+struct Printable;
+
+// Virtual function types
+typedef void (*printable_print_function)(struct Printable self);
+
 typedef struct Printable {
     void *impl_;
 
-    void (*print)(struct Printable self);
+    printable_print_function print;
 } Printable;
 
 
@@ -993,16 +1011,16 @@ void bar(Printable p, int n) {
 
 
 
-void Foo_print(Printable self) {
+void foo_print(Printable self) {
     Foo *foo = (Foo *) self.impl_;
     printf("Foo(%f)\n", foo->f);
 }
 
-void Foo_init(Foo *self) {
+void foo_init(Foo *self) {
     self->f = 0;
     self->printable = (Printable) {
         (void *) self,    // opt. cast
-        Foo_print
+        foo_print
     };
 }
 
@@ -1010,7 +1028,7 @@ void Foo_init(Foo *self) {
 // usage
 int main() {
     Foo foo;
-    Foo_init(&foo);
+    foo_init(&foo);
     foo.f = 1.23f;
     
     bar(foo.printable, 3);
