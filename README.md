@@ -186,7 +186,7 @@ This seems to be the default, but consider the above options to minimize these.
 
 ##### Illegal state
 If you have multiple functions, that use the same state, make the state illegal if a function fails.
-So you must not check every function for a failure and just all functions in a row.
+So you must not check every function for a failure and just once for all functions in a row.
 For example:
 ```c
 typedef struct {
