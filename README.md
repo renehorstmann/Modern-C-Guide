@@ -116,16 +116,15 @@ vec3 rgb2hsv(vec3 rgb) {
 
 ### <a name="S-err-error_delivery"></a> Error delivery
 If you must do some error management, determine what the error should do:
-- Compile time error
-- Debug time error
-- Run time error
-  - should crash the whole program
-  - should crash the library/module
-  - should inform the user
+- [Create a compile time error](#S-err-compile_time)
+- [Create an error in the debug session](#S-err-debug_time)
+- [Create a run time error](#S-err-run_time)
+  - [via a signal](#S-err-signal)
+  - [via a function parameter](#S-err-parameter)
 
 
 #### <a name="S-err-compile_time"></a> Compile Time
-If a function/macro is completely misused, try to generate a compile warning/error.
+If a function/macro is completely misused (wrong types...), try to generate a compile warning/error.
 For example:
 ```c
 // array size may be < 3
@@ -159,7 +158,7 @@ Array3_s very_good_array3_zero() {
 
 
 #### <a name="S-err-debug_time"></a> Debug Time
-If a function is misused, use assertions.
+If a function is misused (should have called another way), use assertions.
 For example:
 ```c
 static int machine;
@@ -183,8 +182,12 @@ void machine_work(int *data, int n) {
 ```
       
 #### <a name="S-err-run_time"></a> Run Time
+There are two versions of run time erros. Predictable errors and "Should not happen" errors.
+The "Should not happen" errors should let the program or module die. 
+In order to do this, we can raise a signal.
+
 ##### <a name="S-err-signals"></a> Signals
-In some cases, its not worth to do proper error management and just let the program die.
+As mentioned above, we can use signals to inform the user, that something unexpected happened.
 For example:
 ```c
 void foo() {
@@ -209,13 +212,14 @@ If you do not want a module to crash the whole program, you have two options:
 - Recover from a function call with a signal handler and long jumps
 
 ##### <a name="S-err-parameter"></a> Parameter
-If the error is common, report the error with its function to the user.
+If the error is common or predictable, report the error with a function parameter or return value to the user.
 This seems to be the default, but consider the above options to minimize these.
+For more informations on how to use them, see [section below](#S-err-error_parameter_options).
 
 
 ### <a name="S-err-illegal_state"></a> Illegal state
 If you have multiple functions, that use the same state, make the state illegal if a function fails.
-So you must not check every function for a failure and just once for all functions in a row.
+So you must not check every function for failure and just once for all functions in a sequence.
 For example:
 ```c
 #include <stdio.h>
@@ -266,9 +270,9 @@ int main() {
 
 ```
 
-
 ### <a name="S-err-error_parameter_options"></a> Error Parameter Options
-  
+
+
 *Todo*
 
 3. How to represent the error
