@@ -190,18 +190,26 @@ So you must not check every function for a failure and just once for all functio
 For example:
 ```c
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
     FILE *f;
     // ...
 } Reader;
 
+bool reader_valid(Reader self) {
+    return self.f != NULL;
+}
+
 int reader_next_int(Reader *self) {
+    if(!reader_valid(*self))
+        return 0;
+
+    // only read if Reader is valid
     int res = 0;
-    // only read if Reader is valid and make it illegal on error
-    if(self->f) {
-         if(fscanf(self->f, "%d", &res) != 1)
-              self->f = NULL;
+    if(fscanf(self->f, "%d", &res) != 1) {
+         // read failed, so make Reader invalid
+         self->f = NULL;
     }
     return res;
 }
@@ -221,7 +229,7 @@ int main() {
     int c = reader_next_int(&r);
 
     // check for an error
-    if(!r.f)
+    if(!reader_valid(r))
         puts("I said ints!!!");
     else
         printf("sum is %d\n", a+b+c);
