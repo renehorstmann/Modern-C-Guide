@@ -64,8 +64,7 @@ void foo() {
 
 
 ### <a name="S-basics-errors"></a>Error Handling
-
-If it is possible, always write functions that do not produce any errors at all.
+If possible, always write functions that do not produce any errors at all.
 For example:
 ```c
 int count_char(const char *string, char c) {
@@ -83,16 +82,16 @@ vec3 rgb2hsv(vec3 rgb) {
     // rgb must be in range [0:1]
     // instead of reporting an error, we just clamp the values
    
-    rgb = vec3_clamp(rgb, 0, 1); // see Mathc
+    rgb = vec3_clamp(rgb, 0, 1); // see my Mathc repository
    
     // ...
 }
 ```
 
-If you must do some error management, determine the type of error:
-- Compile time
-- Debug time
-- Run time
+If you must do some error management, determine what the error should do:
+- Compile time error
+- Debug time error
+- Run time error
   - should crash the whole program
   - should crash the library/module
   - should inform the user
@@ -152,6 +151,29 @@ void machine_work(int *data, int n) {
     for(int i=0; i<n; i++)
         printf("%d\n", data[i]);
 }
+```
+
+#### Run Time Program Crash
+In some cases, its not worth to do proper error management and just let the program die.
+For example:
+```c
+void foo() {
+    int *heap = malloc(sizeof(int));
+    
+    // if we cant malloc 4 bytes, we have much bigger problems!
+    // so just ignore a NULL check and let the program die
+    *heap = 10;
+    // ...
+}
+
+void runtime_assert() {
+    int a = get_positive_integer();
+
+    // if an assumption fails at runtime, a signal is raised
+    assume(a>0, "get_positive failed");  // see my Utilc repository
+    printf("%d\n", 1/a );
+}
+
 ```
 
 *Todo*
