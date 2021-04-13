@@ -198,6 +198,9 @@ For example:
 ```c
 void foo() {
     int *heap = malloc(sizeof(int));
+
+    // NOT PLATFORM INDEPENDENT, see above...
+    // of not on linux, etc. raise a signal by hand, see below
     
     // if we cant malloc 4 bytes, we have much bigger problems!
     // so just ignore a NULL check and let the program die
