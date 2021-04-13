@@ -276,7 +276,30 @@ int main() {
     else
         printf("sum is %d\n", a+b+c);
 }
+```
 
+With this technique, you could build an api this way:
+
+```c
+#include "some_api.h"
+
+int main() {
+    Reader r = reader_new_from_file("some_file.txt");
+    File f = reader_read_as_new_file(r);
+    Image img = image_new_from_filr(f);
+    
+    if(!image_valid(img)) {
+        puts("error reading file!");
+        exit(EXIT_FAILURE);
+    }
+    
+    // do smth with img
+    
+    // cleanup
+    image_kill(img);
+    file_fill(f);
+    reader_kill(r);
+}
 ```
 
 ### <a name="S-err-error_parameter_options"></a> Error Parameter Options
@@ -585,7 +608,10 @@ If you know that there will never be more than one instance of your class, go th
 //
 
 // public data
-extern int foo_cnt;
+struct FooGlobals_s {
+    int cnt;
+};
+extern struct FooGlobals_s foo;
 
 // constructor
 void foo_init();
@@ -604,27 +630,29 @@ void foo_print();
 //
 
 // public data
-int foo_cnt;
+sruct FooGlobals_s foo;
 
 // private data
-static int internal_cnt;
+static struct {
+  int internal_cnt;
+} L;
 
 void foo_init() {
-    foo_cnt = 1;
-    internal_cnt = -1;
+    foo.cnt = 1;
+    L.internal_cnt = -1;
 }
 
 void foo_kill() {
     // free memory, close files...
-    foo_cnt = 0;
+    foo.cnt = 0;
 }
 
 void foo_add(int add) {
-    foo_cnt += add;
+    foo.cnt += add;
 }
 
 void foo_print() {
-    printf("foo %d\n", foo_cnt+internal_cnt);
+    printf("foo %d\n", foo.cnt+L.internal_cnt);
 }
 
 ```
@@ -646,6 +674,7 @@ typedef struct {
     int cnt;
   
     // private data (tailing underscore)
+    //    leading underscores are saved for compilers and the C language (not in structs btw...))
     int internal_cnt_;
 } Foo;
 
